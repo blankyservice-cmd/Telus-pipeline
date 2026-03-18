@@ -1,6 +1,6 @@
 "use client";
 
-import { Users, PhoneCall, AlertTriangle, CalendarDays } from "lucide-react";
+import { Users, PhoneCall, AlertTriangle, CalendarDays, CalendarRange } from "lucide-react";
 import type { Lead } from "@/types/lead";
 
 function parseCallbackDate(callback: string): Date | null {
@@ -47,6 +47,11 @@ function isThisWeek(date: Date): boolean {
   return date >= today && date <= endOfWeek;
 }
 
+function isThisMonth(date: Date): boolean {
+  const today = new Date();
+  return date.getMonth() === today.getMonth() && date.getFullYear() === today.getFullYear();
+}
+
 interface StatsBarProps {
   leads: Lead[];
 }
@@ -60,6 +65,7 @@ export default function StatsBar({ leads }: StatsBarProps) {
   const todayCount = callbackDates.filter((x) => isToday(x.date!)).length;
   const overdueCount = callbackDates.filter((x) => isOverdue(x.date!)).length;
   const weekCount = callbackDates.filter((x) => isThisWeek(x.date!)).length;
+  const monthCount = callbackDates.filter((x) => isThisMonth(x.date!)).length;
 
   const stats = [
     {
@@ -90,10 +96,17 @@ export default function StatsBar({ leads }: StatsBarProps) {
       color: "text-success",
       bg: "bg-success/8",
     },
+    {
+      label: "This Month",
+      value: monthCount,
+      icon: CalendarRange,
+      color: "text-blue-500",
+      bg: "bg-blue-500/8",
+    },
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3 sm:gap-4">
       {stats.map((stat) => (
         <div
           key={stat.label}
