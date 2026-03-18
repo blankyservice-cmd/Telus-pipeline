@@ -323,6 +323,9 @@ export default function PipelineTable({ leads, onUpdateLead, onSchedule, onAnaly
                   <SortIcon field="callback" currentField={sortField} direction={sortDir} />
                 </button>
               </th>
+              <th className="px-4 py-3 text-xs font-semibold text-text-secondary uppercase tracking-wider w-[120px]">
+                Campaign
+              </th>
               <th className="px-4 py-3 text-xs font-semibold text-text-secondary uppercase tracking-wider w-[150px]">
                 <button
                   onClick={() => handleSort("createdAt")}
@@ -392,6 +395,12 @@ export default function PipelineTable({ leads, onUpdateLead, onSchedule, onAnaly
                 </td>
                 <td className="px-4 py-3">
                   <CallbackBadge callback={lead.callback} />
+                </td>
+                <td className="px-4 py-3">
+                  <EditableCell
+                    value={lead.campaign}
+                    onSave={(val) => onUpdateLead(lead.rowIndex, "campaign", val)}
+                  />
                 </td>
                 <td className="px-4 py-3">
                   <TimestampCell

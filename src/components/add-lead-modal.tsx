@@ -11,6 +11,7 @@ interface AddLeadModalProps {
     notes: string;
     update: string;
     callback: string;
+    campaign: string;
   }) => Promise<void>;
 }
 
@@ -19,6 +20,7 @@ export default function AddLeadModal({ onClose, onAdd }: AddLeadModalProps) {
   const [business, setBusiness] = useState("");
   const [phone, setPhone] = useState("");
   const [notes, setNotes] = useState("");
+  const [campaign, setCampaign] = useState("");
   const [saving, setSaving] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -29,7 +31,7 @@ export default function AddLeadModal({ onClose, onAdd }: AddLeadModalProps) {
       const combined = business.trim()
         ? `${contactName.trim()}, ${business.trim()}`
         : contactName.trim();
-      await onAdd({ name: combined, phone, notes, update: "", callback: "" });
+      await onAdd({ name: combined, phone, notes, update: "", callback: "", campaign });
       onClose();
     } catch {
       setSaving(false);
@@ -93,6 +95,19 @@ export default function AddLeadModal({ onClose, onAdd }: AddLeadModalProps) {
               placeholder="647-XXX-XXXX"
               className="w-full px-3 py-2.5 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-telus/30 focus:border-telus placeholder:text-text-muted"
               required
+            />
+          </div>
+
+          <div>
+            <label className="text-sm font-medium text-text-primary mb-1.5 block">
+              Campaign
+            </label>
+            <input
+              type="text"
+              value={campaign}
+              onChange={(e) => setCampaign(e.target.value)}
+              placeholder="e.g. Edmonton Restaurants Q1"
+              className="w-full px-3 py-2.5 text-sm bg-background border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-telus/30 focus:border-telus placeholder:text-text-muted"
             />
           </div>
 

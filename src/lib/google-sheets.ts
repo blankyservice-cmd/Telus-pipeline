@@ -8,7 +8,7 @@ function getSheetsClient(accessToken: string) {
 }
 
 const SHEET_ID = process.env.GOOGLE_SHEET_ID!;
-const RANGE = "Sheet1!A3:H200"; // A-E = original, F = Created, G = Last Interacted
+const RANGE = "Sheet1!A3:I200"; // A-E = original, F = Created, G = Last Interacted, H = Campaign
 
 function nowTimestamp(): string {
   return new Date().toLocaleString("en-CA", {
@@ -38,17 +38,18 @@ export async function getLeads(accessToken: string): Promise<Lead[]> {
     callback: row[4] || "",
     createdAt: row[5] || "",
     lastInteracted: row[6] || "",
+    campaign: row[7] || "",
   }));
 }
 
 export async function updateLead(
   accessToken: string,
   rowIndex: number,
-  field: "name" | "phone" | "notes" | "update" | "callback",
+  field: "name" | "phone" | "notes" | "update" | "callback" | "campaign",
   value: string
 ) {
   const sheets = getSheetsClient(accessToken);
-  const colMap = { name: "A", phone: "B", notes: "C", update: "D", callback: "E" };
+  const colMap = { name: "A", phone: "B", notes: "C", update: "D", callback: "E", campaign: "H" };
   const cell = `Sheet1!${colMap[field]}${rowIndex}`;
   const timestamp = nowTimestamp();
 
@@ -74,10 +75,10 @@ export async function addLead(
 
   await sheets.spreadsheets.values.append({
     spreadsheetId: SHEET_ID,
-    range: "Sheet1!A:G",
+    range: "Sheet1!A:H",
     valueInputOption: "USER_ENTERED",
     requestBody: {
-      values: [[lead.name, lead.phone, lead.notes, lead.update, lead.callback, timestamp, timestamp]],
+      values: [[lead.name, lead.phone, lead.notes, lead.update, lead.callback, timestamp, timestamp, lead.campaign || ""]],
     },
   });
 }

@@ -93,6 +93,7 @@ export default function Home() {
     notes: string;
     update: string;
     callback: string;
+    campaign: string;
   }) {
     const res = await fetch("/api/leads", {
       method: "POST",
@@ -112,7 +113,8 @@ export default function Home() {
       lead.phone.toLowerCase().includes(q) ||
       lead.notes.toLowerCase().includes(q) ||
       lead.update.toLowerCase().includes(q) ||
-      lead.callback.toLowerCase().includes(q)
+      lead.callback.toLowerCase().includes(q) ||
+      lead.campaign.toLowerCase().includes(q)
     );
   });
 

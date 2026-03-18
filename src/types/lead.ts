@@ -5,6 +5,7 @@ export interface Lead {
   notes: string;
   update: string;
   callback: string;
+  campaign: string;
   createdAt: string;
   lastInteracted: string;
 }
