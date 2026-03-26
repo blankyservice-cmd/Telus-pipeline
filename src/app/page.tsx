@@ -1,6 +1,6 @@
 "use client";
 
-import { useSession, signIn } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { useState, useEffect, useCallback } from "react";
 import Header from "@/components/header";
 import StatsBar from "@/components/stats-bar";
@@ -28,6 +28,10 @@ export default function Home() {
       if (res.ok) {
         const data = await res.json();
         setLeads(data);
+      } else if (res.status === 401) {
+        // Token expired -- force re-auth
+        signOut({ callbackUrl: "/" });
+        return;
       }
     } catch (err) {
       console.error("Failed to fetch leads:", err);
@@ -37,9 +41,14 @@ export default function Home() {
 
   useEffect(() => {
     if (status === "authenticated") {
+      // If session has a token error, force re-auth
+      if ((session as any)?.error === "TokenExpired") {
+        signOut({ callbackUrl: "/" });
+        return;
+      }
       fetchLeads();
     }
-  }, [status, fetchLeads]);
+  }, [status, session, fetchLeads]);
 
   async function handleUpdateLead(rowIndex: number, field: keyof Lead, value: string) {
     // Optimistic update with timestamp
